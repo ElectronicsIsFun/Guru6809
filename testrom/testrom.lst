@@ -1,0 +1,44 @@
+                      (      testrom.asm):00001         ******************************************************
+                      (      testrom.asm):00002         *  testrom.asm                                       *
+                      (      testrom.asm):00003         *  Written by: Carlos Santiago                       *
+                      (      testrom.asm):00004         *  Date: August 8, 2023                              *
+                      (      testrom.asm):00005         *                                                    *
+                      (      testrom.asm):00006         *  Write values of $00-$FF starting at address $200  *
+                      (      testrom.asm):00007         *  and ending at address $7fff (end of ram).         *   
+                      (      testrom.asm):00008         *  Check the ram data and fail if it is wrong.       *
+                      (      testrom.asm):00009         *  Otherwise, repeat forever.                        *       
+                      (      testrom.asm):00010         ******************************************************
+                      (      testrom.asm):00011                     org     0
+     00               (      testrom.asm):00012                     setdp   0
+     7FFF             (      testrom.asm):00013         endram      equ     $7fff
+                      (      testrom.asm):00014         
+     C000             (      testrom.asm):00015         reset       equ     rom    set the reset vector to point to
+                      (      testrom.asm):00016                     org     reset  the start of the program.
+                      (      testrom.asm):00017         
+     C000             (      testrom.asm):00018         rom         equ     $c000
+                      (      testrom.asm):00019                     org     rom    start of rom.    
+C000 8600             (      testrom.asm):00020         start       lda     #$00
+C002 8E0000           (      testrom.asm):00021                     ldx     #$0000
+C005 A784             (      testrom.asm):00022         loop        sta     ,x      write data to ram.
+C007 A184             (      testrom.asm):00023                     cmpa    ,x      is the ram data correct?
+C009 260B             (      testrom.asm):00024                     bne     fail    no.
+C00B 4C               (      testrom.asm):00025                     inca
+C00C 3001             (      testrom.asm):00026                     leax    1,x     increment address.
+C00E BC7FFF           (      testrom.asm):00027                     cmpx    endram  end of ram?
+C011 2FF2             (      testrom.asm):00028                     ble     loop    yes.
+C013 7EC000           (      testrom.asm):00029                     jmp     start
+                      (      testrom.asm):00030                     
+C016 7EC016           (      testrom.asm):00031         fail        jmp     fail  
+                      (      testrom.asm):00032             
+                      (      testrom.asm):00033                     org $fffe   reset vector   
+FFFE C000             (      testrom.asm):00034                     FDB reset
+                      (      testrom.asm):00035         
+                      (      testrom.asm):00036                     end start
+
+Symbol Table:
+[ G] endram                           7FFF
+[ G] fail                             C016
+[ G] loop                             C005
+[ G] reset                            C000
+[ G] rom                              C000
+[ G] start                            C000

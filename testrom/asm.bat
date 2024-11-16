@@ -1,0 +1,1 @@
+lwasm -9 %1.asm -s --list=%1.lst --format=raw --output=%1.bin
